@@ -1,0 +1,16 @@
+{
+  "config":
+  {
+    "name": "SearchForEach",
+    "version": "v1.0",
+    "updatePerDay": 1,
+    "maxVariants": 5
+  },
+  "files":
+  [
+    "test/1.txt",
+    "test/2.txt",
+    "test/3.txt",
+    "test/4.txt"
+  ]
+}

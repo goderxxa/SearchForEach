@@ -1,0 +1,8 @@
+in CMD cd progect folder 
+
+Then:
+
+mkdir build
+cd build
+cmake -G "CodeBlocks - MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+cmake --build .
