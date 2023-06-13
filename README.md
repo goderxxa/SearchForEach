@@ -14,7 +14,7 @@
 ##### cd SearchForEach
 ##### mkdir build
 ##### cd build
-##### -G "CodeBlocks - MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+##### cmake -G "CodeBlocks - MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 ##### cmake --build .
 
 ### Programm consists of that files 
