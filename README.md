@@ -7,6 +7,7 @@
 
 #### Windows build
 ##### -install mingw compiler
+##### -install cmake
 ##### -install system variables path to cmake.exe folder
 
 ##### open CMD 
