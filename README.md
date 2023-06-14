@@ -38,18 +38,18 @@ The project uses the Nlohmann Json library to work with JSON files.
 It uses googletests to test this progect.
 It also utilizes threads to improve indexing efficiency.
 
+#### Youtube video how to build progect
+[![build video](https://github.com/goderxxa/SearchForEach/blob/master/prg/video.png)](https://www.youtube.com/watch?v=DfH6WQ6D14Q)
+
 ## Add requests to requests.json
 ## Add filepaths to config.json (/test and /test2)
 #### Request 1 "milk water", "sugar"
-## result
+### result
 ![test1 image](https://github.com/goderxxa/SearchForEach/blob/master/prg/test%201.png)
 ____
 #### Request 2 "moscow is the capital of russia"
-## result
+### result
 ![test2 image](https://github.com/goderxxa/SearchForEach/blob/master/prg/test%202.png)
-
-#### Youtube video how to build progect
-[![build video](https://github.com/goderxxa/SearchForEach/blob/master/prg/video.png)](https://www.youtube.com/watch?v=DfH6WQ6D14Q)
 
 ### Test progect
 [![build video](https://github.com/goderxxa/SearchForEach/blob/master/prg/video.png)](https://www.youtube.com/watch?v=-aQmf-QL6cs)
