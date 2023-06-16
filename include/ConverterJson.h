@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <limits.h>
 
 class ConverterJson {
 
