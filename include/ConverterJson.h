@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <string>
+#include <cstdlib>
 
 class ConverterJson {
 
@@ -17,6 +18,7 @@ private:
 public:
     ConverterJson() = default;
 
+    std::string getPath();
     int GetConfig(); //
     int GetResponsesLimit();
     std::vector<std::string> GetRequests();

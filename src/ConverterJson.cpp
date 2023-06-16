@@ -1,10 +1,49 @@
 #include "ConverterJson.h"
 
+
+#ifdef _WIN32
+#include <Windows.h>
+#elif defined(__linux__)
+#include <unistd.h>
+#elif defined(__APPLE__)
+#include <mach-o/dyld.h>
+#endif
+
+std::string ConverterJson::getPath() {
+    std::string executablePath;
+
+#ifdef _WIN32
+    char path[MAX_PATH];
+    GetModuleFileName(nullptr, path, sizeof(path));
+    executablePath = path;
+#elif defined(__linux__)
+    char path[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", path, sizeof(path) - 1);
+    if (count != -1) {
+        path[count] = '\0';
+        executablePath = path;
+    }
+#elif defined(__APPLE__)
+    char path[PATH_MAX];
+    uint32_t size = sizeof(path);
+    if (_NSGetExecutablePath(path, &size) == 0) {
+        executablePath = path;
+    }
+#endif
+
+    size_t lastSlashPos = executablePath.find_last_of("/\\");
+    if (lastSlashPos != std::string::npos) {
+        executablePath = executablePath.substr(0, lastSlashPos+1);
+    }
+
+    return executablePath;
+}
+
     int ConverterJson::GetConfig()
     {
         try {
             nlohmann::json config;
-            std::ifstream file("config.json");
+            std::ifstream file(getPath()+"config.json");
             if (!file.is_open())
                 throw std::runtime_error("Program cannot run without config.json ");
             file >> config;
@@ -31,7 +70,7 @@
     {
         try {
             nlohmann::json cfg;
-            std::ifstream file("config.json");
+            std::ifstream file(getPath()+"config.json");
             file >> cfg;
             file.close();
             return cfg["config"]["maxVariants"];
@@ -47,7 +86,7 @@
     {
         nlohmann::json requests;
         try {
-            std::ifstream file("requests.json");
+            std::ifstream file(getPath()+"requests.json");
             file >> requests;
         }
         catch (std::exception &e) {
@@ -68,13 +107,14 @@ std::vector<std::string> ConverterJson::GetDocsText()
 {
     try{
         nlohmann::json docs_list;
-        std::ifstream cfg ("config.json");
+        std::ifstream cfg (getPath()+"config.json");
         cfg >> docs_list;       // load config.json into json object
 
         std::vector<std::string> docs;
         for(auto& doc : docs_list["files"])
         {
-            std::ifstream input(doc);
+            std::string id=doc;
+            std::ifstream input( getPath()+id );
             if(input.is_open())
             {
                 std::stringstream buffer;
