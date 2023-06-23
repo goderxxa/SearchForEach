@@ -2,7 +2,10 @@
 project("SearchForEach")
 
 set(CMAKE_CXX_STANDARD 17)
-if(WIN32)
+if(WIN64)
+    set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-static")
+endif()
+if(WINX86)
     set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-static")
 endif()
 
