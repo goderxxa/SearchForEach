@@ -22,11 +22,8 @@ struct Entry {
 class InvertedIndex {
 
 private:
-    std::vector<std::string> docs;
+    std::vector<std::string> text_docs;     // from converterJson getTextDocs()
     std::map<std::string, std::vector<Entry>> freq_dictionary;
-
-    nlohmann::json answers;
-    int reqID;
 
 public:
 
@@ -38,6 +35,7 @@ public:
     std::map<std::string, std::vector<Entry>> wordsFind(const std::vector<std::string>& docs);
     void threadProcess(const std::vector<std::string>& docs);
     void UpdateDocumentBase(const std::vector<std::string>& input_docs);
+    void processDoc(const std::string& doc,  int docid);
 
     void showDict();
 
