@@ -57,7 +57,7 @@ void InvertedIndex::UpdateDocumentBase (const std::vector<std::string>& inputTex
     threadProcess(text_docs);     
 }
 
-void processDoc(const std::string& doc, std::map<std::string, std::vector<Entry>>& freq_dictionary, int docid) {
+void InvertedIndex::processDoc(const std::string& doc, int docid) {
     std::string word;
     for (const char& c : doc) {
         if (std::isalpha(c))
@@ -105,9 +105,8 @@ void InvertedIndex::threadProcess(const std::vector<std::string>& text_docs)
     std::vector<std::thread> threads;
     int docid = 0;
 
-    for (const auto& doc : text_docs) {
-        threads.emplace_back(processDoc, std::ref(doc), std::ref(freq_dictionary), docid); //making refs
-        docid++; // current doc for thread
+    for (const auto &doc : text_docs) {
+        threads.emplace_back([&]() { processDoc(doc, docid); });
     }
 
     for (auto& thread : threads) {
