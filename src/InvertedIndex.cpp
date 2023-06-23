@@ -42,20 +42,26 @@ std::vector<Entry> InvertedIndex::GetWordCount(const std::string& word)
     {
         outVec = std::vector<Entry>();
     }
-
     return outVec;
 }
 
-void InvertedIndex::UpdateDocumentBase (const std::vector<std::string>& inputTextDocs)
-{
+void InvertedIndex::UpdateDocumentBase (const std::vector<std::string>& inputTextDocs) {
     text_docs.clear();
     freq_dictionary.clear();
-    for(auto doc : inputTextDocs)
-    {
-        text_docs.push_back(doc);
+
+    std::vector<std::thread *> threads;
+    std::thread *th;
+
+    for (size_t docId = 0; docId < inputTextDocs.size(); ++docId) {
+        th = new std::thread(&InvertedIndex::processDoc, this, inputTextDocs[docId], docId);
+        threads.push_back(th);
     }
-    threadProcess(text_docs);     
+    for (size_t docId = 0; docId < inputTextDocs.size(); ++docId) {
+        threads[docId]->join();
+        delete threads[docId];
+    }
 }
+
 
 void InvertedIndex::processDoc(const std::string& doc, int docid) {
     std::string word;
@@ -96,21 +102,6 @@ void InvertedIndex::processDoc(const std::string& doc, int docid) {
         {
             entries.insert(entries.end(), { static_cast<size_t>(docid), 1 });
         }
-    }
-}
-
-void InvertedIndex::threadProcess(const std::vector<std::string>& text_docs)
-{
-    freq_dictionary.clear();
-    std::vector<std::thread> threads;
-    int docid = 0;
-
-    for (const auto &doc : text_docs) {
-        threads.emplace_back([&]() { processDoc(doc, docid); });
-    }
-
-    for (auto& thread : threads) {
-        thread.join();  // end of loop
     }
 }
 
