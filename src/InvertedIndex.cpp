@@ -1,7 +1,5 @@
 #include "InvertedIndex.h"
 
-std::vector<std::string> text_docs;     // from converterJson getTextDocs()
-std::map<std::string, std::vector<Entry>> freq_dictionary;  //dictionary
 std::mutex mtx;    //mutex
 
 std::map<std::string, std::vector<Entry>> InvertedIndex::get_freq_dictionary()
@@ -10,7 +8,7 @@ std::map<std::string, std::vector<Entry>> InvertedIndex::get_freq_dictionary()
 };
 std::vector<std::string> InvertedIndex::getDocs()
 {
-    return docs;
+    return text_docs;
 }
 
 std::vector<std::vector<Entry>> InvertedIndex::getEntry(std::vector<std::string> requests)
@@ -56,10 +54,8 @@ void InvertedIndex::UpdateDocumentBase (const std::vector<std::string>& inputTex
     {
         text_docs.push_back(doc);
     }
-    threadProcess(text_docs); // using with
-//    wordsFind(docs);             // using without
+    threadProcess(text_docs);     
 }
-
 
 void processDoc(const std::string& doc, std::map<std::string, std::vector<Entry>>& freq_dictionary, int docid) {
     std::string word;
@@ -118,77 +114,6 @@ void InvertedIndex::threadProcess(const std::vector<std::string>& text_docs)
         thread.join();  // end of loop
     }
 }
-
-//add to dictionary without threads
-std::map<std::string, std::vector<Entry>> InvertedIndex::wordsFind(const std::vector<std::string>& text_docs)
-{
-    std::map<std::string, std::vector<Entry>> total;
-    int id_doc = 0;
-
-    for (const auto& content : docs)
-    {
-        std::string line = content;
-
-        std::lock_guard<std::mutex> lock(mtx); // mutex lock
-
-        std::smatch match;
-        std::regex wordRegex("\\b[a-zA-Z0-9']+[a-zA-Z0-9]?\\b");
-        // regular expression to find word find words like (it's, I'm)
-
-        while (std::regex_search(line, match, wordRegex)) {
-            std::string word = match.str();
-
-            // to lower registry
-            for (char &c: word) {
-                c = tolower(c);
-            }
-
-            if (!total[word].empty() && total[word].back().doc_id == id_doc) {
-                // if last element in vector has same doc_id, ++count
-                total[word].back().count++;
-            } else {
-                // add new item to vector
-                total[word].push_back({static_cast<size_t>(id_doc), 1});
-            }
-            line = match.suffix();
-
-        }
-        id_doc++;
-    }
-    freq_dictionary = total;
-    showDict();
-    return total;
-}
-
-void processDoc1(const std::string& doc, std::map<std::string, std::vector<Entry>>& freq_dictionary, int docid) {
-
-    std::string line = doc;
-
-    std::smatch match;
-    std::regex wordRegex("\\b[a-zA-Z0-9']+[a-zA-Z0-9]?\\b");
-
-    while (std::regex_search(line, match, wordRegex)) {
-        std::string word = match.str();
-
-        for (char &c: word) {
-            c = tolower(c);
-        }
-
-        if (!freq_dictionary[word].empty() && freq_dictionary[word].back().doc_id == docid)         {
-            std::lock_guard<std::mutex> lock(mtx); // mutex lock
-            // if last element in vector has same doc_id, ++count
-            freq_dictionary[word].back().count++;
-        }
-        else
-        {
-            std::lock_guard<std::mutex> lock(mtx); // mutex lock
-            // add new item to vector
-            freq_dictionary[word].push_back({static_cast<size_t>(docid), 1});
-        }
-        line = match.suffix();
-    }
-}
-
 
 void InvertedIndex::showDict()
 {
